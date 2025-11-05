@@ -1,11 +1,12 @@
 import sqlite3
 from sleep import  Sleep
 
+'''класс для работы с БД'''
 class Database:
     def __init__(self, path: str = "sleep_tracker.db"):
         self.path = path
         self.connect()
-
+    """проверка соединения"""
     def connect(self) -> bool:
         try:
             self.conn = sqlite3.connect(self.path)
@@ -14,10 +15,7 @@ class Database:
             print("Ошибка соединения")
             return False
 
-    def disconnect(self):
-        if self.conn:
-            self.conn.close()
-
+    """загрузка таблицы"""
     def load_table(self) -> list:
         sql = "SELECT * FROM sleep_records"
         cursor = self.conn.cursor()
@@ -25,6 +23,7 @@ class Database:
         records = cursor.fetchall()
         return records
 
+    """загрузка конкретной записи по id"""
     def get_record(self, id : int) -> list:
         cursor = self.conn.cursor()
         sql = f"SELECT * FROM sleep_records WHERE id = {id}"
@@ -32,6 +31,7 @@ class Database:
         record = cursor.fetchone()
         return record
 
+    """добавление новой записи в БД"""
     def add_record(self, record : Sleep) -> None:
         cursor = self.conn.cursor()
         sql = "INSERT INTO sleep_records (date, sleep_duration, sleep_quality) VALUES (?, ?, ?)"
@@ -39,6 +39,7 @@ class Database:
         self.conn.commit()
         return
 
+    """удаление последней записи из БД"""
     def remove_last_record(self) -> None:
         cursor = self.conn.cursor()
         index = len(self.load_table())
@@ -48,17 +49,20 @@ class Database:
         cursor.execute(sql2)
         self.conn.commit()
 
+    """редактирование записи"""
     def update_record(self, index: int, record : Sleep) -> None:
         cursor = self.conn.cursor()
         sql = f"UPDATE sleep_records SET sleep_duration = ?, sleep_quality = ? WHERE id = ?"
         cursor.execute(sql, (record.duration, record.quality, index))
         self.conn.commit()
 
+    """очистка"""
     def clear(self):
         cursor = self.conn.cursor()
         cursor.execute("DELETE FROM sleep_records")
         cursor.execute("DELETE FROM sqlite_sequence WHERE name='sleep_records'")
 
+    """получение статистики"""
     def get_statistics(self):
         cursor = self.conn.cursor()
 
@@ -76,17 +80,17 @@ class Database:
             'avg_quality': round(avg_quality, 2),
             'total_records': total_records
         }
-db = Database()
-db.connect()
-s = Sleep( '2025-11-04',7, 6)
-# db.add_record(s)
-# db.remove_last_record()
-# db.add_record(s)
-records = db.load_table()
-for record in records:
-    r = Sleep(record[1], record[2], record[3])
-    print(r)
-newrecord = Sleep('2025-11-03', 5, 4)
-# db.update_record(1, newrecord)
+# db = Database()
+# db.connect()
+# s = Sleep( '2025-11-04',7, 6)
+# # db.add_record(s)
+# # db.remove_last_record()
+# # db.add_record(s)
 # records = db.load_table()
+# for record in records:
+#     r = Sleep(record[1], record[2], record[3])
+#     print(r)
+# newrecord = Sleep('2025-11-03', 5, 4)
+# # db.update_record(1, newrecord)
+# # records = db.load_table()
         

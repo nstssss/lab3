@@ -138,10 +138,9 @@ class SleepTrackerGUI(QMainWindow):
             self.update_button.setEnabled(False)
             self.clear_fields()
 
+    """загружает выбранную запись в форму для редактирования"""
     def load_record_to_form(self, row):
-        """Загружает выбранную запись в форму для редактирования"""
         try:
-            # Получаем ID из таблицы
             record_id = int(self.table.item(row, 0).text())
             self.current_edit_id = record_id
             # Загружаем полные данные записи из БД
@@ -167,8 +166,8 @@ class SleepTrackerGUI(QMainWindow):
         except Exception as e:
             print(f"Ошибка загрузки записи в форму: {e}")
 
+    """обновление выбранной записи"""
     def update_selected_record(self):
-        """Обновление выбранной записи"""
         if (self.current_edit_id == None):
             QMessageBox.warning(self, "Внимание", "Не выбрана запись для редактирования")
             return
@@ -192,8 +191,8 @@ class SleepTrackerGUI(QMainWindow):
             error_msg = str(e)
             QMessageBox.critical(self, "Ошибка", f"Не удалось обновить запись:\n{error_msg}")
 
+    """загрузка данных в таблицу"""
     def load_data(self):
-        """Загрузка данных в таблицу и обновление статистики"""
         try:
             records = self.db.load_table()
 
@@ -212,8 +211,8 @@ class SleepTrackerGUI(QMainWindow):
         except Exception as e:
             QMessageBox.critical(self, "Ошибка", f"Не удалось загрузить данные: {e}")
 
+    """обновление статистики"""
     def update_statistics(self):
-        """Обновление статистики"""
         try:
             records = self.db.load_table()
             if not records:
@@ -235,8 +234,8 @@ class SleepTrackerGUI(QMainWindow):
         except Exception as e:
             print(f"Ошибка обновления статистики: {e}")
 
+    """обеовление графика"""
     def update_chart(self):
-        """Обновление графика"""
         try:
             records = self.db.load_table()
             if not records:
@@ -276,8 +275,8 @@ class SleepTrackerGUI(QMainWindow):
         except Exception as e:
             print(f"Ошибка обновления графика: {e}")
 
+    """добавление новой записи"""
     def add_record(self):
-        """Добавление новой записи"""
         try:
             qt_date = self.date_edit.date()
             sleep_date = date(qt_date.year(), qt_date.month(), qt_date.day())
@@ -295,8 +294,8 @@ class SleepTrackerGUI(QMainWindow):
             error_msg = str(e)
             QMessageBox.critical(self, "Ошибка", f"Не удалось добавить запись:\n{error_msg}")
 
+    """удаление последней записи"""
     def delete_last_record(self):
-        """Удаление последней записи"""
         try:
             records = self.db.load_table()
             if not records:
@@ -323,8 +322,8 @@ class SleepTrackerGUI(QMainWindow):
         except Exception as e:
             QMessageBox.critical(self, "Ошибка", f"Не удалось удалить запись: {e}")
 
+    """очистка полей ввода"""
     def clear_fields(self):
-        """Очистка полей ввода"""
         self.date_edit.setDate(QDate.currentDate())
         self.duration_spin.setValue(7.5)
         self.quality_spin.setValue(7)
