@@ -4,8 +4,7 @@ from sleep import  Sleep
 class Database:
     def __init__(self, path: str = "sleep_tracker.db"):
         self.path = path
-        self.conn = None
-
+        self.connect()
 
     def connect(self) -> bool:
         try:
@@ -49,11 +48,34 @@ class Database:
         cursor.execute(sql2)
         self.conn.commit()
 
+    def update_record(self, index: int, record : Sleep) -> None:
+        cursor = self.conn.cursor()
+        sql = f"UPDATE sleep_records SET sleep_duration = ?, sleep_quality = ? WHERE id = ?"
+        cursor.execute(sql, (record.duration, record.quality, index))
+        self.conn.commit()
+
     def clear(self):
         cursor = self.conn.cursor()
         cursor.execute("DELETE FROM sleep_records")
         cursor.execute("DELETE FROM sqlite_sequence WHERE name='sleep_records'")
 
+    def get_statistics(self):
+        cursor = self.conn.cursor()
+
+        cursor.execute("SELECT AVG(sleep_duration) FROM sleep_records")
+        avg_duration = cursor.fetchone()[0] or 0
+
+        cursor.execute("SELECT AVG(sleep_quality) FROM sleep_records")
+        avg_quality = cursor.fetchone()[0] or 0
+
+        cursor.execute("SELECT COUNT(*) FROM sleep_records")
+        total_records = cursor.fetchone()[0]
+
+        return {
+            'avg_duration': round(avg_duration, 2),
+            'avg_quality': round(avg_quality, 2),
+            'total_records': total_records
+        }
 db = Database()
 db.connect()
 s = Sleep( '2025-11-04',7, 6)
@@ -64,5 +86,7 @@ records = db.load_table()
 for record in records:
     r = Sleep(record[1], record[2], record[3])
     print(r)
-
+newrecord = Sleep('2025-11-03', 5, 4)
+# db.update_record(1, newrecord)
+# records = db.load_table()
         
