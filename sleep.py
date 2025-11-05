@@ -12,7 +12,8 @@ class Sleep:
         return self._date
     @date.setter
     def date(self, value:date):
-        self._date = value
+        if isinstance(value, date):
+            self._date = value
     @property
     def duration(self) -> float:
         return self._duration

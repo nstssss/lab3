@@ -15,7 +15,7 @@ from sleep import Sleep
 from datetime import date
 
 
-class SleepTrackerGUI(QMainWindow):
+class SleepTracker(QMainWindow):
     def __init__(self):
         super().__init__()
         self.db = Database()
@@ -334,7 +334,7 @@ class SleepTrackerGUI(QMainWindow):
 def main():
     app = QApplication(sys.argv)
     app.setStyle('Fusion')
-    window = SleepTrackerGUI()
+    window = SleepTracker()
     window.show()
     sys.exit(app.exec())
 
